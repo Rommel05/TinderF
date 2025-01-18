@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/style-message.css') }}">
+{% endblock %}
+
+{% block title %}Messages{% endblock %}
+
+{% block body %}
+    <div id="main-layout" class="container mt-4">
+
+        <div id="messages" class="mb-4">
+            {% for message in messages %}
+                <div class="message-item mb-3">
+                    <p class="font-weight-bold text-primary mb-1">{{ message.sennder.name }}</p>
+                    <p class="message-text">{{ message.text }}</p>
+                    <p class="message-date">{{ message.date|date('d-m-Y H:i') }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            {{ form_start(form, { 'attr' : {'id' : 'form', 'class' : 'w-100'} }) }}
+
+            <div class="input-group">
+                {{ form_row(form.text, {'attr' : {'maxlength' : '1000', 'class' : 'form-control'} }) }}
+            </div>
+
+            <button type="submit" class="btn btn-success ml-2">Send</button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script>
+            const receiverId = {{ receiver.id }};
+            const messages = document.getElementById("messages");
+
+            function fetchMessage() {
+                fetch(`/message/${receiverId}`, { method: 'GET' })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        data.forEach(message => {
+                            if (!document.getElementById(message.id)) {
+                                let messageDiv = document.createElement("div");
+                                messageDiv.setAttribute("id", message.id);
+                                messageDiv.setAttribute("class", "message-item mb-3")
+
+                                let senderNameP = document.createElement("p");
+                                senderNameP.setAttribute("class", "font-weight-bold text-primary mb-1");
+                                senderNameP.appendChild(document.createTextNode(message.sender));
+                                messageDiv.appendChild(senderNameP);
+
+                                let messageTextP = document.createElement("p");
+                                messageTextP.setAttribute("class", "message-text");
+                                messageTextP.appendChild(document.createTextNode(message.text));
+                                messageDiv.appendChild(messageTextP);
+
+                                let messageDateP = document.createElement("p");
+                                messageDateP.setAttribute("class", "message-date");
+                                messageDateP.appendChild(document.createTextNode(new Date(message.date).toLocaleString()));
+                                messageDiv.appendChild(messageDateP);
+
+                                messages.appendChild(messageDiv);
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error en la solicitud:', error);
+                    });
+            }
+
+            setInterval(fetchMessage, 3000);
+        </script>
+    {% endblock %}
+
+{% endblock %}

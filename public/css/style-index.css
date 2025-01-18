@@ -1,0 +1,43 @@
+#content {
+    background: linear-gradient(135deg, #ff7f7f, #ff4d4d);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+.header {
+    margin-top: 50px;
+}
+.header h1 {
+    font-size: 3rem;
+    color: #fff;
+    font-weight: 700;
+}
+.main-content {
+    margin-top: 80px;
+}
+.btn-custom {
+    padding: 15px 30px;
+    font-size: 1.25rem;
+    border-radius: 50px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+/**/
+.btn-login {
+    background-color: #ff4d4d;
+    border-color: #ff4d4d;
+}
+.btn-signup {
+    background-color: #ff7f7f;
+    border-color: #ff7f7f;
+}
+.btn-custom:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
