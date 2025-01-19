@@ -28,7 +28,7 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/{id}', name: 'profile_match')]
+    #[Route('/profileMatch/{id}', name: 'profile_match')]
     public function profile_match($id, UserRepository $userRepository): Response
     {
         $user = $userRepository->find($id);
