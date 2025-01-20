@@ -68,12 +68,11 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Crear el formulario
         $form = $this->createFormBuilder($user)
             ->add('password', PasswordType::class, [
                 'label' => 'Password',
                 'required' => false,
-                'mapped' => false, // Evita que el campo sea automáticamente enlazado
+                'mapped' => false,
                 'attr' => ['placeholder' => 'Leave blank to keep current password'],
             ])
             ->add('name', TextType::class, ['label' => 'Name'])
@@ -83,7 +82,7 @@ class ProfileController extends AbstractController
             ->add('imagePath', FileType::class, [
                 'label' => 'Profile Image',
                 'required' => false,
-                'mapped' => false, // El archivo no se enlaza directamente al campo de la entidad
+                'mapped' => false,
             ])
             ->add('save', SubmitType::class, ['label' => 'Save'])
             ->getForm();
@@ -93,18 +92,16 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $managerRegistry->getManager();
 
-            // Si se subió una nueva imagen, manejar el archivo
             $imageFile = $form->get('imagePath')->getData();
             if ($imageFile) {
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                 $imageFile->move(
-                    $this->getParameter('images_directory'), // Define este parámetro en tu configuración
+                    $this->getParameter('images_directory'),
                     $newFilename
                 );
                 $user->setImagePath($newFilename);
             }
 
-            // Si se introdujo una nueva contraseña, actualizarla
             $newPassword = $form->get('password')->getData();
             if ($newPassword) {
                 $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
